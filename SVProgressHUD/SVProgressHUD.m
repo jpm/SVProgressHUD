@@ -118,6 +118,18 @@ static SVProgressHUD *sharedView = nil;
     [SVProgressHUD dismissWithError:string afterDelay:duration];
 }
 
++ (void)showErrorUntilDismissedWithStatus:(NSString *)string {
+    [SVProgressHUD showWithMaskType:SVProgressHUDMaskTypeClear];
+    [SVProgressHUD dismissWithError:string afterDelay:MAXFLOAT];
+    
+    // add hidden button to handle the dismiss feature
+    SVProgressHUD *topView = [SVProgressHUD sharedView];
+    UIButton *b = [UIButton buttonWithType:UIButtonTypeCustom];
+    b.frame = topView.hudView.bounds;
+    [b addTarget:topView action:@selector(dismiss) forControlEvents:UIControlEventTouchUpInside];
+    [topView.hudView addSubview:b];
+}
+
 
 #pragma mark - Dismiss Methods
 
@@ -148,7 +160,7 @@ static SVProgressHUD *sharedView = nil;
 	
     if ((self = [super initWithFrame:frame])) {
         [self.overlayWindow addSubview:self];
-		self.userInteractionEnabled = NO;
+		self.userInteractionEnabled = YES;
         self.backgroundColor = [UIColor clearColor];
 		self.alpha = 0;
         self.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
